@@ -55,15 +55,27 @@ submitButton.addEventListener('click', () => {
 
 setInterval(() => {
     countdowns = '';
-    eventsArray.forEach((element) => {
-        addEvent(element);
+    eventsArray.forEach((element, index) => {
+        addEvent(element, index);
     });
     countdownDiv.innerHTML = countdowns;
 }, 1000);
 
-function addEvent(element) {
-    countdowns += '<div>';
-    countdowns += `<h1>${element.getName}<h1>`;
-    countdowns += `<h3>Seconds: ${(element.getDate - new Date()) / 1000}</h3>`;
-    countdowns += '</div>';
+function addEvent(element, index) {
+    let timeDif = (element.getDate - new Date()) / 1000;
+    if(timeDif < 0) {
+        eventsArray.splice(index, 1);
+        alert(`${element.getName} is happening right now. Congratulations on reaching that!`);
+    } else {
+        countdowns += '<div>';
+        countdowns += `<h1>${element.getName}<h1>`;
+        countdowns += `<h3>Months: ${Math.floor(timeDif / (60 * 60 * 24 * 30)) % 12}</h3>`;
+        countdowns += `<h3>Days: ${Math.floor(timeDif / (60 * 60 * 24)) % 30}</h3>`;
+        countdowns += `<h3>${timeFormat(Math.floor(timeDif / (60 * 60)) % 24)}:${timeFormat(Math.floor(timeDif / 60) % 60)}:${timeFormat(Math.floor(timeDif) % 60)}</h3>`;
+        countdowns += '</div>';
+    }
+}
+
+function timeFormat(time) {
+    return time.toString().length === 2 ? time : "0" + time;
 }
